@@ -24,7 +24,7 @@ if "__main__" == __name__:
     background = "Defaut"       # On affiche un background par défaut au départ
     pageEnCours = "Acceuil"     # Par défaut on affiche l'accueil
     listeJoueurs: List[Joueur] = []
-
+# drtyjeuiiiiiiiiiiiiiiiiiiiiiiiiiiiiiize
     run = True
     changementPage = True
     
