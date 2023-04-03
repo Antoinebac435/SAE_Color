@@ -10,6 +10,7 @@ from PageChoixJouer import PageChoixJouer
 from PageJeu import PageJeu
 from PageOption import PageOption
 from PageRegles import PageRegles
+from PageStats import PageStats
 from PageMentionLegale import PageMentionLegale
 from PagefinPartie import PagefinPartie
 from typing import List
@@ -43,6 +44,7 @@ if "__main__" == __name__:
         pChoixJouer = PageChoixJouer(fenetre,"./images/Theme/"+ background+"/fondPageAutre.png")
         pOption = PageOption(fenetre, canal_1, "./images/Theme/"+ background+"/fondPageAutre.png")
         pRegles = PageRegles(fenetre,"./images/Theme/"+ background+"/fondPageAutre.png")
+        pStats = PageStats(fenetre,"./images/Theme/"+ background+"/fondPageAutre.png")
         PMentionLegale = PageMentionLegale(fenetre,"./images/Theme/"+ background+"/fondPageAutre.png")
         PfinPartie = PagefinPartie(fenetre,"./images/Theme/"+ background+"/fondPageAutre.png")
         
@@ -104,6 +106,16 @@ if "__main__" == __name__:
         if (changementPage == True and pageEnCours == "Regles"): 
             pRegles.afficherPageRegles()
             choix = pRegles.attendreChoix()
+
+            # pas de choix on retourne sur l'accueil
+            if (choix == None):
+                pageEnCours = "Acceuil"
+                changementPage = True
+        
+        # Affichage de la page des Stats du jeu
+        if (changementPage == True and pageEnCours == "Stats"): 
+            pStats.afficherPageStats()
+            choix = pStats.attendreChoix()
 
             # pas de choix on retourne sur l'accueil
             if (choix == None):
