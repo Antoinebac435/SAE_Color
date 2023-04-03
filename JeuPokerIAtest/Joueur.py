@@ -75,5 +75,5 @@ class Joueur ():
         
     def __str__(self) -> str:
         
-        return "nom :"+self.nom+ "main:"+str(self.mainJoueur) + "typeJoueur"+str(self.bot)
+        return "nom :"+self.nom+ "main:"+str(self.mainJoueur) + "typeJoueur"+str(self.bot) + "victoire"+bool(self.aPerdu)
         

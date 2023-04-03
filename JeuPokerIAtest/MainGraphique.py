@@ -147,16 +147,18 @@ if "__main__" == __name__:
                             compteurRobot += 1
                     else:
                         joueur = Joueur(joueurDict["nomJoueur"], joueurDict["gainsJoueur"], "./Images/Avatar/{0}".format(joueurDict["avatar"]), False, None)
+
                         print(joueurDict["nomJoueur"])
-                        sqlnom = "select nom_joueur from joueur where joueur.nom_joueur = %s"
-                        mycursor.execute(sqlnom, (joueurDict["nomJoueur"],))
+                        
+                        mycursor.execute( (joueurDict["nomJoueur"]))
                         result = mycursor.fetchone()
                         if result is None:
-                            sql = "INSERT INTO joueur (nom_joueur,nb_Partie) VALUES (%s,1)"
+                            sql = "INSERT INTO joueur (nom_joueur) VALUES (%s)"
                             valeurs = (joueurDict["nomJoueur"],)
-                            mycursor.execute(sql, valeurs)
+                            mycursor.execute(sql,valeurs)
                             mydb.commit()
                         else:
+                            sqlnom = "select nom_joueur from joueur where joueur.nom_joueur = %s"
                             sqlcount = "select count(nb_Partie) from joueur where nom_joueur = %s"
                             mycursor.execute(sqlcount, (joueurDict["nomJoueur"],))
                             result = mycursor.fetchone()
