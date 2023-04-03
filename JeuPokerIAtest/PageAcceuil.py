@@ -51,6 +51,7 @@ class PageAcceuil():
         self.boutonJouer = Bouton(300,300,300,50,(243,223,36),"Jouer",self.fenetre,30,True)
         self.boutonOption = Bouton(300,400,300,50,(243,223,36),"Option",self.fenetre,30,True)
         self.boutonRegle = Bouton(300,500,300,50,(243,223,36),"Règle",self.fenetre,30,True)
+        self.boutonStats = Bouton(300,600,300,50,(243,223,36),"Stats",self.fenetre,30,True)
         self.boutonCroix = Boutonc(30,25,(0,0,0),self.fenetre,15)
 
         pygame.display.update()
@@ -85,6 +86,11 @@ class PageAcceuil():
                     elif self.boutonRegle.verifier_click_bouton(positionClick) == True:
                         choixEffectue = True
                         choix = "Regles"
+                        
+                    # Pour les Stats
+                    elif self.boutonStats.verifier_click_bouton(positionClick) == True:
+                        choixEffectue = True
+                        choix = "Stats"
 
                     # Pour quitter
                     elif self.boutonCroix.verifier_click_bouton(positionClick) == True:
