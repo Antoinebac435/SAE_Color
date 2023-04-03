@@ -169,11 +169,16 @@ if "__main__" == __name__:
                             mycursor.execute(sql, valeurs)
                             mydb.commit()
                         else:
+                            sqlnom = "select nom_joueur from joueur"
                             sqlcount = "select count(nb_partie) from joueur where nom_joueur = %s"
                             mycursor.execute(sqlcount, (joueurDict["nomJoueur"],))
                             result = mycursor.fetchone()
                             count = result[0]
                             sql = "INSERT INTO joueur (nom_joueur,nb_partie) VALUES (%s,%s)"
+                            valeurs = (joueurDict["nomJoueur"], count)
+                            mycursor.execute(sql, valeurs)
+                            count = result[0]
+                            sql = "delete from joueur where nom_joueur = %s and nb_partie < %s"
                             valeurs = (joueurDict["nomJoueur"], count)
                             mycursor.execute(sql, valeurs)
                             mydb.commit()
