@@ -238,6 +238,22 @@ if "__main__" == __name__:
                 if p.run() == "Fin" : 
                     joueur_gagne = p.jeu.getJoueurCourant().getNom()
                     print("Le joueur qui a gagné est", joueur_gagne)
+
+
+                    # sqlnom = "select id_joueur from joueur where nom_joueur = %s"
+                    # sqlcount = "select count(nb_partie) from joueur where nom_joueur = %s"
+                    # mycursor.execute(sqlcount, (joueurDict["nomJoueur"],))
+                    # result = mycursor.fetchone()
+                    # count = result[0]
+                    sql = "INSERT INTO partie (nom_joueur,victoire) VALUES (%s,1)"
+                    print(sql)
+                    valeurs = (joueurDict["nomJoueur"],)
+                    mycursor.execute(sql, valeurs)
+                    # sqlnom = "select nom_joueur from joueur"
+
+                    # if 
+
+                    mydb.commit()
                     pageEnCours = "FinPartie"
                     changementPage = True
                     
