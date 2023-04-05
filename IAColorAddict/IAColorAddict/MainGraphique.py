@@ -10,12 +10,15 @@ from PagesGraphique.PageCreationPartieEnLigne import PageCreationPartieEnLigne
 from PagesGraphique.PageJoueurAttenteEnLigne import PageAttenteJoueurEnLigne
 from PagesGraphique.PageOption import PageOption
 from PagesGraphique.PageRegles import PageRegles
+from PagesGraphique.PageStats import PageStats
 from PagesGraphique.PageMentionLegale import PageMentionLegale
 from PagesGraphique.PageReseau import PageReseau
 from PagesGraphique.PagefinPartie import PagefinPartie
 from MainJeu import MainJeu
 from Jeu.Joueur import Joueur
+import os
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
 # --------------------------------------------------------------------------
@@ -51,6 +54,7 @@ if "__main__" == __name__:
         pOption = PageOption(fenetre, canal_1, os.path.join('ressources', 'Theme', background, 'fondPageAcceuil.png'))
         pRegles = PageRegles(fenetre,os.path.join('ressources', 'Theme', background, 'fondPageAcceuil.png'))
         PMentionLegale = PageMentionLegale(fenetre,os.path.join('ressources', 'Theme', background, 'fondPageAcceuil.png'))
+        pStats = PageStats(fenetre,os.path.join('ressources', 'Theme', background, 'fondPageAcceuil.png'))
         PfinPartie = PagefinPartie(fenetre,os.path.join('ressources', 'Theme', background, 'fondPageAcceuil.png'), joueur_gagne)
         pReseau = PageReseau(fenetre,os.path.join('ressources', 'Theme', background, 'fondPageAcceuil.png'))
         pCreationPartieEnLigne = PageCreationPartieEnLigne(fenetre,os.path.join('ressources', 'Theme', background, 'fondPageAcceuil.png'))
@@ -132,6 +136,15 @@ if "__main__" == __name__:
                 pageEnCours = "Acceuil"
                 changementPage = True
     
+        # Affichage de la page des Stats du jeu
+        if (changementPage == True and pageEnCours == "Stats"): 
+            pStats.afficherPageStats()
+            choix = pStats.attendreChoix()
+
+            # pas de choix on retourne sur l'accueil
+            if (choix == None):
+                pageEnCours = "Acceuil"
+                changementPage = True    
          
         ## Affichage de la page des mentions légales   
         if (changementPage == True and pageEnCours == "MentionLegale"):

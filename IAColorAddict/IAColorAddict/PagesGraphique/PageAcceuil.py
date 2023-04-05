@@ -35,6 +35,11 @@ class PageAcceuil():
         background = pygame.image.load(self.croixQuitter)
         self.fenetre.blit(background,(10, 10))
         
+        #Logo Stats
+        self.Stats = os.path.join('ressources', 'Outils', 'Resize_statistics.png')
+        background = pygame.image.load(self.Stats)
+        self.fenetre.blit(background,(10, 50))
+        
         
         # Image Background en fonction du thème choisi par l'utilisateur
         # Obligé de faire plusieurs conditions car les logos ne font pas la même taille, 
@@ -70,6 +75,7 @@ class PageAcceuil():
         self.boutonEnLigne = Bouton(300,600,300,50,(243,223,36),"Jouer en réseau",self.fenetre,30,True)
    
         self.boutonCroix = Boutonc(30,25,(0,0,0),self.fenetre,15)
+        self.BoutonStats = Boutonc(30,75,(0,0,0),self.fenetre,15)
 
         pygame.display.update()
         
@@ -91,6 +97,9 @@ class PageAcceuil():
                     elif self.boutonRegle.verifier_click_bouton(positionClick) == True:
                         choixEffectue = True
                         choix = "Regles"
+                    elif self.BoutonStats.verifier_click_bouton(positionClick) == True:
+                        choixEffectue = True
+                        choix = "Stats"
                     elif self.boutonEnLigne.verifier_click_bouton(positionClick) == True:
                         choixEffectue = True
                         choix = "EnLigne"
