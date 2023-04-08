@@ -1,3 +1,5 @@
+import datetime
+import psycopg2
 import pygame
 import os
 import random
@@ -42,6 +44,17 @@ if "__main__" == __name__:
     canal_1.play(musique)
     background = "Defaut"
     pageEnCours = "Acceuil"
+    listeJoueurs: list[Joueur] = []
+
+
+    mydb = psycopg2.connect(
+        host = "localhost",
+        database = "base_color_addict",
+        port = "5432",
+        user = "laetitia",
+        password = "1806"
+)
+    mycursor = mydb.cursor()
 
     run = True
     changementPage = True
@@ -172,7 +185,44 @@ if "__main__" == __name__:
             elif (choix == "Partie"):
                 liste_joueur = pChoixJouer.listeJoueurs
                 ordre = pChoixJouer.typePartie
+
+                listeDictJoueurs = pChoixJouer.getListeJoueurs()
+                               
+                    # On boucle sur le dictionnaire des joueurs pour créer les joueurs de la page du jeu
+                compteurRobot = 1
+                for joueurDict in listeDictJoueurs:
+                    if joueurDict["type"] == "IA":
+                        joueur = Joueur("Bot"+str(compteurRobot), joueurDict["type"], joueurDict["niveau"])
+                        compteurRobot += 1
+                    else:
+                        joueur = Joueur(joueurDict["nomJoueur"], joueurDict["type"], joueurDict["niveau"])
+                        print(joueurDict["nomJoueur"])
+                        sqlnom = "select nom_joueur from joueur where joueur.nom_joueur = %s"
+                        mycursor.execute(sqlnom, (joueurDict["nomJoueur"],))
+                        result = mycursor.fetchone()
+                        if result is None:
+                            sql = "INSERT INTO joueur (nom_joueur,nb_partie) VALUES (%s,1)"
+                            valeurs = (joueurDict["nomJoueur"],)
+                            mycursor.execute(sql, valeurs)
+                            mydb.commit()
+                        else:
+                            sqlnom = "select nom_joueur from joueur"
+                            sqlcount = "select count(nb_partie) from joueur where nom_joueur = %s"
+                            mycursor.execute(sqlcount, (joueurDict["nomJoueur"],))
+                            result = mycursor.fetchone()
+                            count = result[0]
+                            sql = "INSERT INTO joueur (nom_joueur,nb_partie) VALUES (%s,%s)"
+                            valeurs = (joueurDict["nomJoueur"], count)
+                            mycursor.execute(sql, valeurs)
+                            count = result[0]
+                            sql = "delete from joueur where nom_joueur = %s and nb_partie < %s"
+                            valeurs = (joueurDict["nomJoueur"], count)
+                            mycursor.execute(sql, valeurs)
+                            mydb.commit()
+
+                        listeJoueurs.append(joueur)
                 
+
                 # Gestion d'ordre des joueurs
                 if ordre != "Dans l'ordre": 
                     random.shuffle(liste_joueur)
@@ -188,6 +238,22 @@ if "__main__" == __name__:
                 if p.run() == "Fin" : 
                     joueur_gagne = p.jeu.getJoueurCourant().getNom()
                     print("Le joueur qui a gagné est", joueur_gagne)
+
+
+                    # sqlnom = "select id_joueur from joueur where nom_joueur = %s"
+                    # sqlcount = "select count(nb_partie) from joueur where nom_joueur = %s"
+                    # mycursor.execute(sqlcount, (joueurDict["nomJoueur"],))
+                    # result = mycursor.fetchone()
+                    # count = result[0]
+                    sql = "INSERT INTO partie (nom_joueur,victoire) VALUES (%s,1)"
+                    print(sql)
+                    valeurs = (joueurDict["nomJoueur"],)
+                    mycursor.execute(sql, valeurs)
+                    # sqlnom = "select nom_joueur from joueur"
+
+                    # if 
+
+                    mydb.commit()
                     pageEnCours = "FinPartie"
                     changementPage = True
                     

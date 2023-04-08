@@ -19,6 +19,9 @@ couleurs = ['jaune','rouge','rose','vert','orange','noir','bleu', 'marron','gris
 titres = ['jaune','rouge','rose','vert','orange','noir','bleu', 'marron','gris','violet']
 
 
+
+
+
 class JeuCartes() : 
     def __init__(self, nbCartes: int = 110): 
         self.nbCartes : int = nbCartes
