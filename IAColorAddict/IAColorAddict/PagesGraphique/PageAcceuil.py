@@ -75,7 +75,7 @@ class PageAcceuil():
         self.boutonEnLigne = Bouton(300,600,300,50,(243,223,36),"Jouer en réseau",self.fenetre,30,True)
    
         self.boutonCroix = Boutonc(30,25,(0,0,0),self.fenetre,15)
-        self.BoutonStats = Boutonc(30,75,(0,0,0),self.fenetre,15)
+        self.BoutonStats = Boutonc(30,75,(0,0,0,0),self.fenetre,15)
 
         pygame.display.update()
         
