@@ -11,6 +11,7 @@ from PagesGraphique.PopUpMulticolor import PopUpMulticolor
 from os import listdir
 import pygame
 import time
+import psycopg2
 
 import os
 
@@ -28,6 +29,7 @@ class MainJeu():
         self.dictionnaire_joueur = dictionnaire_joueur
         self.liste = self.dictionnaire_joueur
         self.background = background
+        self.count_multicouleur = 0
         
         self.nom_joueur : list[Joueur] = []
 
@@ -36,6 +38,7 @@ class MainJeu():
         ## Liste du nom des joueurs (pour la classe Jeu)
         for i in range(len(dictionnaire_joueur)) : 
             self.nom_joueur.append(Joueur(dictionnaire_joueur[i]['nomJoueur'],dictionnaire_joueur[i]['type'], dictionnaire_joueur[i]['niveau']))
+            print( self.nom_joueur.append(Joueur(dictionnaire_joueur[i]['nomJoueur'],dictionnaire_joueur[i]['type'], dictionnaire_joueur[i]['niveau'])))
             
     
         # Le jeu 
@@ -134,9 +137,11 @@ class MainJeu():
     def run(self): 
         ''' Cette méthode gère le jeu ; change de joueur, vérifie si victoire, en fonction de la réponse du joueur, joue la carte... '''
         run = True
+        i = 0
         
 
         while run:
+            
             
             # En cas de victoire ; on retourne "Fin" pour que dans MainGraphique, on affiche la page de Fin
             if self.jeu.victoireJoueur() == True : 
@@ -147,12 +152,26 @@ class MainJeu():
             if self.nouvelle_fenetre.bouton_quitter == True : 
                 run = False
                 return "Fermer"
+
+            
             
             # Affichage Pop Up / et fene^tre 
             self.afficherPop( self.jeu.getJoueurCourant().getNom(), self.liste[0]["avatar"])
             self.nouvelle_fenetre.afficherFenetre()
-            
-            print("carteaucentre",self.jeu.getCarteMillieu().getCouleur(), self.jeu.getCarteMillieu().getTitre() )
+            print("le dico joueur" + self.jeu.getJoueurCourant().afficherMain())
+            for i,carte in enumerate(self.jeu.getJoueurCourant().getMainJoueur()):
+                # for i,carte in enumerate(self.jeu.getJoueurCourant().getPiocheJoueur()):
+                multicouleur = carte.getCouleur()
+                # print("valeur de i:" +i)
+                print("carte Joueur:"+ multicouleur)
+                if (multicouleur == 'multicolor'):
+                    print ('multicouleur')
+                    self.count_multicouleur = self.count_multicouleur + 1
+                    return self.count_multicouleur
+             
+
+                
+            print("carteaucentre",self.jeu.getCarteMillieu().getCouleur(), self.jeu.getCarteMillieu().getCouleur() )
             
             if (self.jeu.getJoueurCourant().getNom() == 'IA') : 
                 self.afficherPopIA(self.liste[0]["avatar"], None, None)

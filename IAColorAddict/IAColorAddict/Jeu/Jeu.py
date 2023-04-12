@@ -47,7 +47,7 @@ class Jeu():
 
     def printCarte(self) : 
         '''Méthode redéfinie car ne marchait pas'''
-        print(self.tabCartesJoueurs)
+        return(self.tabCartesJoueurs)
 
     def getJoueurCourant(self):
         '''Méthode qui permet d'avoir le Joueur courant'''

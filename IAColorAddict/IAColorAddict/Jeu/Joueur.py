@@ -57,7 +57,7 @@ class Joueur ():
         ''' Méthode qui permet d'afficher la main d'un joueur (3 cartes +-)'''
 
         for cartes in self.mainJoueur : 
-            print(cartes.AfficheCarte())
+            return (cartes.AfficheCarte())
         
     def setNom(self, nom : str ):
         ''' Méthode qui permet de modifier le nom d'un joueur'''

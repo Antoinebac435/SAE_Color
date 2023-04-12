@@ -186,6 +186,8 @@ if "__main__" == __name__:
                 liste_joueur = pChoixJouer.listeJoueurs
                 ordre = pChoixJouer.typePartie
 
+                
+
                 listeDictJoueurs = pChoixJouer.getListeJoueurs()
                                
                     # On boucle sur le dictionnaire des joueurs pour créer les joueurs de la page du jeu
@@ -229,10 +231,20 @@ if "__main__" == __name__:
 
                 # Lancement de la partie
                 p = MainJeu(liste_joueur, background)
+                # print("la main du joueur est " +p.jeu.getJoueurCourant().getMainJoueur())
+
                 p.run()
                 pageEnCours = "Main" # changer le truc
+                print (  p.count_multicouleur)
+
+                if ( p.count_multicouleur != 0):
+                    sql = "INSERT INTO deroulement_partie (nom_joueur,carte_multicouleur) values (%s,%s)"
+                    valeurs = (joueurDict["nomJoueur"], p.count_multicouleur)
+                    mycursor.execute(sql, valeurs)
+                    mydb.commit()
+
                 
-                
+                 
                 
                 # Si victoire
                 if p.run() == "Fin" : 
