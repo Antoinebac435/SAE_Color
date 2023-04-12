@@ -199,28 +199,24 @@ if "__main__" == __name__:
                     else:
                         joueur = Joueur(joueurDict["nomJoueur"], joueurDict["type"], joueurDict["niveau"])
                         print(joueurDict["nomJoueur"])
-                        sqlnom = "select nom_joueur from joueur where joueur.nom_joueur = %s"
+                        sqlnom = "SELECT nom_joueur FROM joueur WHERE nom_joueur = %s"
                         mycursor.execute(sqlnom, (joueurDict["nomJoueur"],))
                         result = mycursor.fetchone()
                         if result is None:
-                            sql = "INSERT INTO joueur (nom_joueur,nb_partie) VALUES (%s,1)"
+                            sql = "INSERT INTO joueur (nom_joueur, nb_partie) VALUES (%s, 1)"
                             valeurs = (joueurDict["nomJoueur"],)
                             mycursor.execute(sql, valeurs)
                             mydb.commit()
                         else:
-                            sqlnom = "select nom_joueur from joueur"
-                            sqlcount = "select count(nb_partie) from joueur where nom_joueur = %s"
+                            sqlcount = "SELECT nb_partie FROM joueur WHERE nom_joueur = %s"
                             mycursor.execute(sqlcount, (joueurDict["nomJoueur"],))
                             result = mycursor.fetchone()
                             count = result[0]
-                            sql = "INSERT INTO joueur (nom_joueur,nb_partie) VALUES (%s,%s)"
-                            valeurs = (joueurDict["nomJoueur"], count)
-                            mycursor.execute(sql, valeurs)
-                            count = result[0]
-                            sql = "delete from joueur where nom_joueur = %s and nb_partie < %s"
-                            valeurs = (joueurDict["nomJoueur"], count)
+                            sql = "UPDATE joueur SET nb_partie = %s WHERE nom_joueur = %s"
+                            valeurs = (count + 1, joueurDict["nomJoueur"])
                             mycursor.execute(sql, valeurs)
                             mydb.commit()
+
 
                         listeJoueurs.append(joueur)
                 
@@ -237,11 +233,11 @@ if "__main__" == __name__:
                 pageEnCours = "Main" # changer le truc
                 print (  p.count_multicouleur)
 
-                if ( p.count_multicouleur != 0):
-                    sql = "INSERT INTO deroulement_partie (nom_joueur,carte_multicouleur) values (%s,%s)"
-                    valeurs = (joueurDict["nomJoueur"], p.count_multicouleur)
-                    mycursor.execute(sql, valeurs)
-                    mydb.commit()
+                # if ( p.count_multicouleur != 0):
+                #     sql = "INSERT INTO deroulement_partie (nom_joueur,carte_multicouleur) values (%s,%s)"
+                #     valeurs = (joueurDict["nomJoueur"], p.count_multicouleur)
+                #     mycursor.execute(sql, valeurs)
+                #     mydb.commit()
 
                 
                  
