@@ -231,17 +231,7 @@ if "__main__" == __name__:
 
                 p.run()
                 pageEnCours = "Main" # changer le truc
-                print (  p.count_multicouleur)
 
-                # if ( p.count_multicouleur != 0):
-                #     sql = "INSERT INTO deroulement_partie (nom_joueur,carte_multicouleur) values (%s,%s)"
-                #     valeurs = (joueurDict["nomJoueur"], p.count_multicouleur)
-                #     mycursor.execute(sql, valeurs)
-                #     mydb.commit()
-
-                
-                 
-                
                 # Si victoire
                 if p.run() == "Fin" : 
                     joueur_gagne = p.jeu.getJoueurCourant().getNom()

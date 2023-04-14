@@ -30,8 +30,20 @@ class MainJeu():
         self.liste = self.dictionnaire_joueur
         self.background = background
         self.count_multicouleur = 0
+        self.cartes_multicouleur = []
+        self.count_pioche = 0
+        self.count_pioche = []
         
         self.nom_joueur : list[Joueur] = []
+
+        self.mydb = psycopg2.connect(
+        host = "localhost",
+        database = "base_color_addict",
+        port = "5432",
+        user = "laetitia",
+        password = "1806"
+)
+        self.mycursor = self.mydb.cursor()
 
         
         
@@ -120,19 +132,6 @@ class MainJeu():
         return valeur
     
 
-    # def afficherpopUpIA(self) : 
-    #     fin = time.time() + 1.6 
-    #     pop = PopUp(liste, nom, self.background, avatar)
-        
-    #     while time.time()<fin:
-    #         pop.afficherPopUp()
-
-        
- 
-    
-
-
-  
                 
     def run(self): 
         ''' Cette méthode gère le jeu ; change de joueur, vérifie si victoire, en fonction de la réponse du joueur, joue la carte... '''
@@ -159,15 +158,62 @@ class MainJeu():
             self.afficherPop( self.jeu.getJoueurCourant().getNom(), self.liste[0]["avatar"])
             self.nouvelle_fenetre.afficherFenetre()
             print("le dico joueur" + self.jeu.getJoueurCourant().afficherMain())
-            for i,carte in enumerate(self.jeu.getJoueurCourant().getMainJoueur()):
-                # for i,carte in enumerate(self.jeu.getJoueurCourant().getPiocheJoueur()):
-                multicouleur = carte.getCouleur()
+
+            
+
+            for carte in self.jeu.getJoueurCourant().getMainJoueur():
+                #  boucle sur les cartes que possède un joueur dans sa main
+                multicouleur = carte
+                print ("joueur courant est: " + self.jeu.getJoueurCourant().getNom())
+                print (multicouleur.getCouleur())
+                print (multicouleur.getTitre())
                 # print("valeur de i:" +i)
-                print("carte Joueur:"+ multicouleur)
-                if (multicouleur == 'multicolor'):
+                # print("carte Joueur:"+ multicouleur)
+
+                if (multicouleur.getCouleur() == 'multicolor' and multicouleur not in self.cartes_multicouleur):
+                    #  si la carte est une multicouleur et que cette carte 'est pas dans le tableau empêche de compter 2 x la même
                     print ('multicouleur')
                     self.count_multicouleur = self.count_multicouleur + 1
-                    return self.count_multicouleur
+                    #  +1 au compteur
+                    self.cartes_multicouleur.append(multicouleur)
+                    self.cartes_multicouleur.append(self.jeu.getJoueurCourant().getNom())
+                    #  ajoute dans le tableau 
+                    print (self.cartes_multicouleur)
+                    print("le joueur courant :" + self.jeu.getJoueurCourant().getNom())
+                    
+                    if ( len(self.cartes_multicouleur) != 0):
+                        print (  len(self.cartes_multicouleur))
+                        print ("salut diif de 0")
+                        sqlnom = "SELECT nom_joueur FROM deroulement_partie WHERE nom_joueur = %s"
+                        valeurs = (self.jeu.getJoueurCourant().getNom(),)
+                        self.mycursor.execute(sqlnom,valeurs)
+                        result = self.mycursor.fetchone()
+                        print("--------------")
+                        print(valeurs)
+                    
+                        if result is None:
+                            print("pas dans le tableau")
+                            sql = "INSERT INTO deroulement_partie (nom_joueur,carte_multicouleur) values (%s,1)"
+                            valeurs = (self.jeu.getJoueurCourant().getNom(),)
+                            self.mycursor.execute(sql, valeurs)
+                            self.mydb.commit()
+                            print(sql)
+                            print("--------------")
+                            print(valeurs)
+                        else:
+                            print ("je suis DANS LE TABLEAU")
+                            sqlcount = "SELECT carte_multicouleur FROM deroulement_partie WHERE nom_joueur = %s"
+                            print(self.jeu.getJoueurCourant().getNom())
+
+                            self.mycursor.execute(sqlcount, (self.jeu.getJoueurCourant().getNom(),))
+                     
+                            result = self.mycursor.fetchone()
+                            count = result[0]
+                            sql = "UPDATE deroulement_partie SET carte_multicouleur = %s WHERE nom_joueur = %s"
+                            valeurs = (count + 1, self.jeu.getJoueurCourant().getNom())
+                            self.mycursor.execute(sql, valeurs)
+                            self.mydb.commit()
+
              
 
                 
@@ -181,6 +227,8 @@ class MainJeu():
                 if valeur == "pioche" : 
                     if len(self.jeu.getJoueurCourant().getMainJoueur()) < 5 : 
                         self.jeu.getJoueurCourant().piocherCarteSiPossible()
+                        
+
                 else : 
                     self.carte_centre = valeur
                     
@@ -191,6 +239,39 @@ class MainJeu():
                 # Attente d'une réponse de l'utilisateur
                 while self.nouvelle_fenetre.selectionnercarte() != True : 
                     self.nouvelle_fenetre.selectionnercarte()
+                    sqlnom = "SELECT nom_joueur FROM partie_pioche WHERE nom_joueur = %s"
+                    valeurs = (self.jeu.getJoueurCourant().getNom(),)
+                    self.mycursor.execute(sqlnom,valeurs)
+                    result = self.mycursor.fetchone()
+                    print("--------------")
+                    print(valeurs)
+                        
+                    if result is None:
+                        print("pas dans le tableau")
+                        sql = "INSERT INTO partie_pioche (nom_joueur,count_pioche) values (%s,1)"
+                        valeurs = (self.jeu.getJoueurCourant().getNom(),)
+                        self.mycursor.execute(sql, valeurs)
+                        self.mydb.commit()
+                        print(sql)
+                        print("--------------")
+                        print(valeurs)
+                    else:
+                        print ("je suis DANS LE TABLEAU")
+                        sqlcount = "SELECT count_pioche FROM partie_pioche WHERE nom_joueur = %s"
+                        print(self.jeu.getJoueurCourant().getNom())
+
+                        self.mycursor.execute(sqlcount, (self.jeu.getJoueurCourant().getNom(),))
+                        self.mydb.commit()
+                        result = self.mycursor.fetchone()
+                        count = result[0]
+                        sql = "UPDATE partie_pioche SET count_pioche = %s WHERE nom_joueur = %s"
+                        valeurs = (count + 1, self.jeu.getJoueurCourant().getNom())
+                        self.mycursor.execute(sql, valeurs)
+                        self.mydb.commit()
+
+                        print(sql)
+                        print("--------------")
+                        print(valeurs)
                     
                 # Dans le cas où le bouton fermer à été cliqué ; on retourne "Fermer" pour que dans MainGraphique, on affiche la page d'accueil
                 if self.nouvelle_fenetre.bouton_quitter == True : 
@@ -201,6 +282,12 @@ class MainJeu():
                 if self.nouvelle_fenetre.pioche_active == True : 
                     if len(self.jeu.getJoueurCourant().getMainJoueur()) < 5 : 
                         self.jeu.getJoueurCourant().piocherCarteSiPossible()
+                        # self.count_pioche = self.count_pioche + 1
+                        
+                        # self.cartes_multicouleur.append(multicouleur)
+                        # print (self.cartes_multicouleur)
+                        # print("le joueur courant :" + self.jeu.getJoueurCourant().getNom())
+                        # return self.cartes_multicouleur and self.count_multicouleur
                     
                     
                 else : 
